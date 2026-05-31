@@ -9,10 +9,12 @@ Demo bubble overlay cho pet, dùng giọng cute xưng `tớ/cậu`.
 This is a static site. Publish the repository with GitHub Pages using:
 
 - Source: `Deploy from a branch`
-- Branch: `main`
+- Branch: `gh-pages`
 - Folder: `/ (root)`
 
-Then open the Pages URL GitHub gives you.
+Then open:
+
+https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 
 ## Files
 
