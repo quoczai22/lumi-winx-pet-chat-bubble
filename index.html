@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumi Winx Pet Bubble</title>
+    <link rel="stylesheet" href="./pet-bubble.css" />
+  </head>
+  <body>
+    <main class="demo-shell">
+      <section class="stage" aria-label="Pet chat bubble demo">
+        <div class="pet-widget" id="petWidget">
+          <div class="pet-bubble" id="petBubble" role="status" aria-live="polite">
+            <span id="petBubbleText"></span>
+          </div>
+          <div class="pet-avatar" aria-label="Lumi Winx"></div>
+        </div>
+      </section>
+
+      <section class="control-panel" aria-label="Bubble controls">
+        <label for="assistantText">Assistant reply</label>
+        <textarea id="assistantText" rows="4">Mình làm được nè, để mình kiểm tra cho bạn.</textarea>
+
+        <div class="actions">
+          <button id="showBubble" type="button">Hiện bubble</button>
+          <button id="voiceDemo" type="button">Voice thử</button>
+        </div>
+
+        <p class="hint">
+          Bubble sẽ đổi câu trả lời sang giọng pet: xưng tớ/cậu, ngắn hơn, mềm hơn.
+        </p>
+      </section>
+    </main>
+
+    <script src="./pet-bubble.js"></script>
+  </body>
+</html>
