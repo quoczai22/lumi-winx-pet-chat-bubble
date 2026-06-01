@@ -23,7 +23,6 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 - `pet-bubble.js`: chuyển câu trả lời assistant thành câu bubble ngắn, cute.
 - `coach-config.json`: luật speaking examiner/coach.
 - `speaking-bank.json`: câu hỏi và câu trả lời mẫu từ file `av3.txt`.
-- `training-data.json`: dữ liệu huấn luyện mock local theo dạng câu hỏi/câu trả lời.
 - `profile-data.json`: thông tin cá nhân dùng cho Speaking Practice.
 - `speaking-topics.json`: topic/câu hỏi mẫu để trả lời speaking theo context.
 - `assets/lumi-winx-spritesheet.webp`: spritesheet demo của Lumi Winx.
@@ -45,25 +44,6 @@ Shortcut: paste text like `You answered: "..."` into the question box and click 
 This mode sends the user's question, `profile-data.json`, and matching notes from `speaking-topics.json` to local Ollama. It asks the model to answer in first person, simple A2-B1 English, using the student's profile first.
 
 Edit `profile-data.json` to teach the assistant about the student. Edit `speaking-topics.json` to add expected speaking topics and answer ideas.
-
-## Paaraket mock local
-
-This version does not call a paid API. It searches `training-data.json` for the closest known English question, returns the stored answer, then asks Lumi Winx to show a cute short bubble.
-
-Add more examples like this:
-
-```json
-{
-  "id": "topic-id",
-  "questions": [
-    "Main training question?",
-    "Similar way to ask it?"
-  ],
-  "answer": "The answer Paaraket should return."
-}
-```
-
-This is fast and free, but it only knows the training data. To answer like a real AI, replace `askPaaraket()` with a Netlify Function or local Ollama call.
 
 ## Ollama local mode
 

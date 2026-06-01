@@ -10,7 +10,6 @@ const ollamaModel = "llama3.2:3b";
 
 let hideTimer = 0;
 let typeTimer = 0;
-let trainingData = [];
 let profileData = null;
 let speakingTopics = [];
 let coachConfig = null;
@@ -121,33 +120,6 @@ function similarityScore(left, right) {
   return overlap / Math.sqrt(leftTokens.size * rightTokens.size);
 }
 
-function findBestTrainingAnswer(question) {
-  let best = { entry: null, score: 0, matchedQuestion: "" };
-
-  for (const entry of trainingData) {
-    for (const candidate of entry.questions) {
-      const score = similarityScore(question, candidate);
-      if (score > best.score) {
-        best = { entry, score, matchedQuestion: candidate };
-      }
-    }
-  }
-
-  return best;
-}
-
-function cuteAnswerForTraining(match) {
-  if (!match.entry || match.score < 0.28) {
-    return "Câu này tớ chưa được học kỹ á cậu, cho tớ thêm dữ liệu nha?";
-  }
-
-  if (match.score > 0.72) {
-    return "Tớ biết câu này nè cậu, nghe tớ trả lời nha.";
-  }
-
-  return "Câu này giống bài tớ học rùi, tớ thử trả lời nha.";
-}
-
 function selectedAnswerMode() {
   return document.querySelector('input[name="answerMode"]:checked')?.value || "ollama";
 }
@@ -224,16 +196,6 @@ async function askOllama(question, context = "") {
 
   const data = await response.json();
   return (data.response || "").trim();
-}
-
-async function loadTrainingData() {
-  try {
-    const response = await fetch("./training-data.json", { cache: "no-store" });
-    trainingData = await response.json();
-  } catch {
-    trainingData = [];
-    textarea.value = "Training data could not be loaded. If you opened this as a local file, try using the GitHub Pages URL.";
-  }
 }
 
 async function loadJsonFile(path, fallback) {
@@ -339,10 +301,6 @@ function buildCoachContext(userText) {
 }
 
 async function askPaaraket() {
-  if (trainingData.length === 0) {
-    await loadTrainingData();
-  }
-
   const question = questionText.value.trim();
   const directSpeech = directPetSpeechFromQuestion(question);
   if (directSpeech) {
@@ -398,7 +356,7 @@ async function askPaaraket() {
       return;
     } catch (error) {
       textarea.value = [
-        "Speaking practice could not reach Ollama, so Paaraket fell back to mock training.",
+        "Speaking practice could not reach Ollama.",
         "",
         `Reason: ${error.message}`
       ].join("\n");
@@ -419,7 +377,7 @@ async function askPaaraket() {
       return;
     } catch (error) {
       textarea.value = [
-        "Ollama local is not reachable from this page, so Paaraket fell back to mock training.",
+        "Ollama local is not reachable from this page.",
         "",
         `Reason: ${error.message}`
       ].join("\n");
@@ -429,24 +387,7 @@ async function askPaaraket() {
     }
   }
 
-  const match = findBestTrainingAnswer(question);
-
-  if (!match.entry || match.score < 0.28) {
-    textarea.value = [
-      "I do not know this from my local training data yet.",
-      "Add a similar question and answer to training-data.json, then I can answer it next time."
-    ].join("\n");
-    showPetBubble(cuteAnswerForTraining(match), { alreadyCute: true });
-    return;
-  }
-
-  textarea.value = [
-    match.entry.answer,
-    "",
-    `Matched: "${match.matchedQuestion}"`,
-    `Confidence: ${Math.round(match.score * 100)}%`
-  ].join("\n");
-  showPetBubble(cuteAnswerForTraining(match), { alreadyCute: true });
+  showPetBubble("Cậu chọn Speaking coach hoặc Ollama local nha.", { alreadyCute: true });
 }
 
 function typeIntoBubble(text) {
@@ -527,7 +468,7 @@ window.petBubble = {
   }
 };
 
-Promise.all([loadTrainingData(), loadPersonalContext()]).then(() => {
+loadPersonalContext().then(() => {
   showPetBubble("Paaraket local sẵn sàng rùi nè cậu.", {
     alreadyCute: true
   });
