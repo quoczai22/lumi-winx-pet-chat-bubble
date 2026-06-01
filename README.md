@@ -22,7 +22,15 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 - `pet-bubble.css`: giao diện bubble và pet idle animation.
 - `pet-bubble.js`: chuyển câu trả lời assistant thành câu bubble ngắn, cute.
 - `training-data.json`: dữ liệu huấn luyện mock local theo dạng câu hỏi/câu trả lời.
+- `profile-data.json`: thông tin cá nhân dùng cho Speaking Practice.
+- `speaking-topics.json`: topic/câu hỏi mẫu để trả lời speaking theo context.
 - `assets/lumi-winx-spritesheet.webp`: spritesheet demo của Lumi Winx.
+
+## Speaking Practice mode
+
+This mode sends the user's question, `profile-data.json`, and matching notes from `speaking-topics.json` to local Ollama. It asks the model to answer in first person, simple A2-B1 English, using the student's profile first.
+
+Edit `profile-data.json` to teach the assistant about the student. Edit `speaking-topics.json` to add expected speaking topics and answer ideas.
 
 ## Paaraket mock local
 

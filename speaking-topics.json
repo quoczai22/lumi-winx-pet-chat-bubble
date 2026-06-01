@@ -1,0 +1,47 @@
+[
+  {
+    "topic": "Free time",
+    "sample_questions": [
+      "What do you usually do in your free time?",
+      "What hobbies do you enjoy?",
+      "How do you relax after school?"
+    ],
+    "answer_idea": "Talk about coding, AI pets, and learning English with small projects."
+  },
+  {
+    "topic": "Technology",
+    "sample_questions": [
+      "Do you like technology?",
+      "How does technology help you study?",
+      "What app or tool do you use often?"
+    ],
+    "answer_idea": "Say that technology helps you learn faster, practice English, and build creative things like Lumi Winx."
+  },
+  {
+    "topic": "English learning",
+    "sample_questions": [
+      "Why are you learning English?",
+      "How do you practice speaking English?",
+      "What is difficult about learning English?"
+    ],
+    "answer_idea": "Say English helps you communicate, learn programming resources, and feel more confident."
+  },
+  {
+    "topic": "School",
+    "sample_questions": [
+      "What is your favorite subject?",
+      "Can you describe your school day?",
+      "What subject do you find difficult?"
+    ],
+    "answer_idea": "Mention computer science and English. Keep the answer simple and personal."
+  },
+  {
+    "topic": "Future",
+    "sample_questions": [
+      "What do you want to do in the future?",
+      "What is your dream job?",
+      "What skill do you want to improve?"
+    ],
+    "answer_idea": "Talk about improving English, coding, and building useful AI tools."
+  }
+]

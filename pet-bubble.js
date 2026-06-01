@@ -10,6 +10,8 @@ const ollamaModel = "llama3.2:3b";
 let hideTimer = 0;
 let typeTimer = 0;
 let trainingData = [];
+let profileData = null;
+let speakingTopics = [];
 
 const cuteReplies = [
   {
@@ -146,12 +148,13 @@ function selectedAnswerMode() {
   return document.querySelector('input[name="answerMode"]:checked')?.value || "ollama";
 }
 
-function buildOllamaPrompt(question) {
+function buildOllamaPrompt(question, context = "") {
   return [
     "You are Paaraket AI, a fast friendly English learning assistant.",
     "Answer the user's English question clearly and briefly.",
     "Prefer practical explanations and examples.",
     "If the question is not about English, programming, interviews, or learning, still answer helpfully but keep it concise.",
+    context,
     "",
     `Question: ${question}`,
     "",
@@ -171,7 +174,7 @@ function petBubbleTextForAiAnswer(answer) {
   return "Tớ có câu trả lời rồi nè cậu, gọn mà đủ ý luôn á.";
 }
 
-async function askOllama(question) {
+async function askOllama(question, context = "") {
   const response = await fetch(ollamaEndpoint, {
     method: "POST",
     headers: {
@@ -179,7 +182,7 @@ async function askOllama(question) {
     },
     body: JSON.stringify({
       model: ollamaModel,
-      prompt: buildOllamaPrompt(question),
+      prompt: buildOllamaPrompt(question, context),
       stream: false,
       options: {
         temperature: 0.25,
@@ -206,6 +209,65 @@ async function loadTrainingData() {
   }
 }
 
+async function loadJsonFile(path, fallback) {
+  try {
+    const response = await fetch(path, { cache: "no-store" });
+    return await response.json();
+  } catch {
+    return fallback;
+  }
+}
+
+async function loadPersonalContext() {
+  const [profile, topics] = await Promise.all([
+    loadJsonFile("./profile-data.json", null),
+    loadJsonFile("./speaking-topics.json", [])
+  ]);
+
+  profileData = profile;
+  speakingTopics = topics;
+}
+
+function topicScore(question, topic) {
+  const haystack = [
+    topic.topic,
+    topic.answer_idea,
+    ...(topic.sample_questions || [])
+  ].join(" ");
+
+  return similarityScore(question, haystack);
+}
+
+function findRelevantTopics(question) {
+  return [...speakingTopics]
+    .map((topic) => ({ topic, score: topicScore(question, topic) }))
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 2)
+    .filter((item) => item.score > 0.05)
+    .map((item) => item.topic);
+}
+
+function buildSpeakingContext(question) {
+  const relevantTopics = findRelevantTopics(question);
+
+  return [
+    "",
+    "Student profile JSON:",
+    JSON.stringify(profileData, null, 2),
+    "",
+    "Relevant speaking topic notes JSON:",
+    JSON.stringify(relevantTopics, null, 2),
+    "",
+    "Speaking answer rules:",
+    "- Answer as if the student is speaking about himself.",
+    "- Use first person: I, my, me.",
+    "- Use simple natural English at A2-B1 level.",
+    "- Keep the answer 2 to 4 short sentences.",
+    "- Use the profile first. Do not invent specific personal facts that conflict with the profile.",
+    "- If profile information is missing, make a safe general answer that a student could say naturally."
+  ].join("\n");
+}
+
 async function askPaaraket() {
   if (trainingData.length === 0) {
     await loadTrainingData();
@@ -215,6 +277,31 @@ async function askPaaraket() {
   if (!question) {
     showPetBubble("Cậu hỏi tớ một câu tiếng Anh đi nè.", { alreadyCute: true });
     return;
+  }
+
+  if (selectedAnswerMode() === "speaking") {
+    showPetBubble("Tớ soạn câu trả lời theo info của cậu nha.", { alreadyCute: true });
+    textarea.value = "Thinking with profile + Ollama...";
+
+    try {
+      if (!profileData) {
+        await loadPersonalContext();
+      }
+
+      const answer = await askOllama(question, buildSpeakingContext(question));
+      textarea.value = answer || "Ollama did not return an answer.";
+      showPetBubble("Tớ có câu trả lời theo kiểu của cậu rùi nè.", { alreadyCute: true });
+      return;
+    } catch (error) {
+      textarea.value = [
+        "Speaking practice could not reach Ollama, so Paaraket fell back to mock training.",
+        "",
+        `Reason: ${error.message}`
+      ].join("\n");
+      showPetBubble("Ollama chưa bắt được á, tớ dùng bài học local nha.", {
+        alreadyCute: true
+      });
+    }
   }
 
   if (selectedAnswerMode() === "ollama") {
@@ -328,7 +415,7 @@ window.petBubble = {
   askPaaraket
 };
 
-loadTrainingData().then(() => {
+Promise.all([loadTrainingData(), loadPersonalContext()]).then(() => {
   showPetBubble("Paaraket local sẵn sàng rùi nè cậu.", {
     alreadyCute: true
   });

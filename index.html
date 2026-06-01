@@ -23,7 +23,11 @@
 
         <div class="mode-row" aria-label="Answer mode">
           <label class="mode-option">
-            <input type="radio" name="answerMode" value="ollama" checked />
+            <input type="radio" name="answerMode" value="speaking" checked />
+            Speaking practice
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="answerMode" value="ollama" />
             Ollama local
           </label>
           <label class="mode-option">
@@ -41,7 +45,7 @@
         <textarea id="assistantText" rows="5" readonly>Mình làm được nè, để mình kiểm tra cho bạn.</textarea>
 
         <p class="hint">
-          Ollama local dùng model trên máy cậu, không tốn API token. Nếu Ollama chưa chạy, app sẽ fallback về mock training.
+          Speaking practice dùng profile/topic của cậu rồi nhờ Ollama soạn câu trả lời tiếng Anh ngắn, tự nhiên.
         </p>
       </section>
     </main>
