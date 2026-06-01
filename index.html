@@ -17,17 +17,20 @@
         </div>
       </section>
 
-      <section class="control-panel" aria-label="Bubble controls">
-        <label for="assistantText">Assistant reply</label>
-        <textarea id="assistantText" rows="4">Mình làm được nè, để mình kiểm tra cho bạn.</textarea>
+      <section class="control-panel" aria-label="Paaraket AI controls">
+        <label for="questionText">Ask Paaraket AI</label>
+        <textarea id="questionText" rows="3">What is the difference between let and const in JavaScript?</textarea>
 
         <div class="actions">
-          <button id="showBubble" type="button">Hiện bubble</button>
+          <button id="askPaaraket" type="button">Hỏi Paaraket</button>
           <button id="voiceDemo" type="button">Voice thử</button>
         </div>
 
+        <label for="assistantText" class="answer-label">Answer draft</label>
+        <textarea id="assistantText" rows="5" readonly>Mình làm được nè, để mình kiểm tra cho bạn.</textarea>
+
         <p class="hint">
-          Bubble sẽ đổi câu trả lời sang giọng pet: xưng tớ/cậu, ngắn hơn, mềm hơn.
+          Bản local mock tìm câu hỏi gần giống trong dữ liệu training, trả lời nhanh và đưa bản cute cho Lumi Winx.
         </p>
       </section>
     </main>

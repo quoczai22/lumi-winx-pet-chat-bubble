@@ -156,6 +156,10 @@ body {
   color: #6f4325;
 }
 
+.answer-label {
+  margin-top: 16px;
+}
+
 textarea {
   width: 100%;
   resize: vertical;
@@ -168,6 +172,11 @@ textarea {
   font: inherit;
   line-height: 1.45;
   outline: none;
+}
+
+textarea[readonly] {
+  min-height: 140px;
+  background: rgba(255, 250, 240, 0.72);
 }
 
 textarea:focus {

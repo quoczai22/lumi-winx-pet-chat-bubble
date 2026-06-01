@@ -1,0 +1,74 @@
+[
+  {
+    "id": "js-let-const",
+    "questions": [
+      "What is the difference between let and const in JavaScript?",
+      "How are let and const different?",
+      "When should I use let or const?"
+    ],
+    "answer": "Use const when the variable binding should not be reassigned. Use let when you need to reassign the variable later. Both are block-scoped."
+  },
+  {
+    "id": "closure",
+    "questions": [
+      "What is a closure in JavaScript?",
+      "Can you explain closure?",
+      "How do closures work?"
+    ],
+    "answer": "A closure is when a function remembers variables from the scope where it was created, even after that outer function has finished running."
+  },
+  {
+    "id": "promise",
+    "questions": [
+      "What is a Promise in JavaScript?",
+      "Explain JavaScript promises",
+      "How does a Promise work?"
+    ],
+    "answer": "A Promise represents an asynchronous operation that may finish later. It can be pending, fulfilled, or rejected, and you handle the result with then, catch, or async/await."
+  },
+  {
+    "id": "async-await",
+    "questions": [
+      "What is async await?",
+      "How does async await work in JavaScript?",
+      "Why use async and await?"
+    ],
+    "answer": "async and await make asynchronous code look easier to read. An async function returns a Promise, and await pauses that function until the Promise settles."
+  },
+  {
+    "id": "react-state-props",
+    "questions": [
+      "What is the difference between state and props in React?",
+      "React props vs state",
+      "How are props and state different?"
+    ],
+    "answer": "Props are data passed from a parent component to a child component. State is data managed inside a component and can change over time."
+  },
+  {
+    "id": "http-get-post",
+    "questions": [
+      "What is the difference between GET and POST?",
+      "When should I use GET or POST?",
+      "GET vs POST HTTP methods"
+    ],
+    "answer": "GET is usually used to read data and should not change server state. POST is used to send data that may create or update something on the server."
+  },
+  {
+    "id": "api",
+    "questions": [
+      "What is an API?",
+      "Explain API in simple words",
+      "What does API mean?"
+    ],
+    "answer": "An API is a way for two pieces of software to talk to each other through a defined set of rules, requests, and responses."
+  },
+  {
+    "id": "fallback",
+    "questions": [
+      "What should you do if you do not know the answer?",
+      "How do you handle unknown questions?",
+      "What if the question is not in training data?"
+    ],
+    "answer": "If the answer is not in the training data, say that you are not sure yet and ask for more context instead of guessing."
+  }
+]

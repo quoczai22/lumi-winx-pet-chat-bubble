@@ -21,7 +21,27 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 - `index.html`: demo mở trực tiếp trong browser.
 - `pet-bubble.css`: giao diện bubble và pet idle animation.
 - `pet-bubble.js`: chuyển câu trả lời assistant thành câu bubble ngắn, cute.
+- `training-data.json`: dữ liệu huấn luyện mock local theo dạng câu hỏi/câu trả lời.
 - `assets/lumi-winx-spritesheet.webp`: spritesheet demo của Lumi Winx.
+
+## Paaraket mock local
+
+This version does not call a paid API. It searches `training-data.json` for the closest known English question, returns the stored answer, then asks Lumi Winx to show a cute short bubble.
+
+Add more examples like this:
+
+```json
+{
+  "id": "topic-id",
+  "questions": [
+    "Main training question?",
+    "Similar way to ask it?"
+  ],
+  "answer": "The answer Paaraket should return."
+}
+```
+
+This is fast and free, but it only knows the training data. To answer like a real AI, replace `askPaaraket()` with a Netlify Function or local Ollama call.
 
 ## API nhỏ
 
