@@ -191,6 +191,15 @@ function petBubbleTextForAiAnswer(answer) {
   return "Tớ có câu trả lời rồi nè cậu, gọn mà đủ ý luôn á.";
 }
 
+function directPetSpeechFromQuestion(text) {
+  const match = text.match(/^\s*you answered:\s*["“](.+?)["”]\s*$/is);
+  if (match) {
+    return match[1].trim();
+  }
+
+  return "";
+}
+
 async function askOllama(question, context = "") {
   const response = await fetch(ollamaEndpoint(), {
     method: "POST",
@@ -335,6 +344,13 @@ async function askPaaraket() {
   }
 
   const question = questionText.value.trim();
+  const directSpeech = directPetSpeechFromQuestion(question);
+  if (directSpeech) {
+    textarea.value = directSpeech;
+    showPetBubble(directSpeech, { alreadyCute: true });
+    return;
+  }
+
   if (!question && selectedAnswerMode() !== "coach") {
     showPetBubble("Cậu hỏi tớ một câu tiếng Anh đi nè.", { alreadyCute: true });
     return;

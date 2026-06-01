@@ -38,6 +38,8 @@ The coach uses:
 - `profile-data.json` for student identity and goals.
 - `speaking-bank.json` for sample speaking answers.
 
+Shortcut: paste text like `You answered: "..."` into the question box and click **Hỏi Paaraket**. Lumi Winx will show the quoted answer directly in the speech bubble.
+
 ## Speaking Practice mode
 
 This mode sends the user's question, `profile-data.json`, and matching notes from `speaking-topics.json` to local Ollama. It asks the model to answer in first person, simple A2-B1 English, using the student's profile first.
