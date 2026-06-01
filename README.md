@@ -33,6 +33,8 @@ This mode acts like a local English speaking examiner. Type `start` or leave the
 
 If you type an examiner question that closely matches `speaking-bank.json`, the app returns the stored answer idea instead of pretending to grade it. This keeps the original `av3.txt` context available when you need a model answer.
 
+For strong matches, the app returns the bank answer instantly without calling Ollama. Ollama is used only when the question is new or the match is weak.
+
 The coach uses:
 
 - `coach-config.json` for examiner rules.

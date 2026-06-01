@@ -346,6 +346,14 @@ function buildBankAnswerContext(match) {
   ].join("\n");
 }
 
+function instantBankAnswer(match) {
+  if (!match.item) {
+    return "";
+  }
+
+  return match.item.answer.trim();
+}
+
 function correctVoiceTranscript(transcript) {
   let best = { question: transcript, score: 0 };
 
@@ -424,6 +432,21 @@ async function askPaaraket() {
         match.item &&
         match.score >= 0.46 &&
         !/^(start|begin|first question)$/i.test(message);
+
+      if (shouldReturnBankAnswer && match.score >= 0.58) {
+        const answer = instantBankAnswer(match);
+        textarea.value = [
+          answer,
+          "",
+          `Matched instantly: "${match.item.question}"`,
+          `Confidence: ${Math.round(match.score * 100)}%`
+        ].join("\n");
+        coachHistory.push({ role: "student", content: message });
+        coachHistory.push({ role: "coach", content: answer });
+        showPetBubble("Tớ tìm thấy câu mẫu, trả lời ngay cho cậu nè.", { alreadyCute: true });
+        return;
+      }
+
       const context = shouldReturnBankAnswer ? buildBankAnswerContext(match) : buildCoachContext(message, match);
       const answer = await askOllama(message, context);
       textarea.value = answer || "Ollama did not return an answer.";
