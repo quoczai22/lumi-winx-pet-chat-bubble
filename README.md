@@ -69,6 +69,12 @@ If the browser blocks localhost from the hosted GitHub Pages page, open `index.h
 
 You can also paste another server URL into the **Ollama server URL** field, for example an ngrok URL or a real server that proxies Ollama.
 
+Current demo default:
+
+```text
+https://ignition-good-urethane.ngrok-free.dev
+```
+
 ### ngrok / real server note
 
 Do not expose Ollama directly to the public internet for long-term use because the Ollama API has no app-level login in this demo. For quick testing, an ngrok URL is okay while you are watching it. For an always-on setup, use a small backend/proxy with authentication or deploy a real API provider behind Netlify/Vercel/Cloudflare.

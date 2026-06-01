@@ -5,7 +5,7 @@ const questionText = document.querySelector("#questionText");
 const askButton = document.querySelector("#askPaaraket");
 const voiceButton = document.querySelector("#voiceDemo");
 const ollamaBaseUrlInput = document.querySelector("#ollamaBaseUrl");
-const defaultOllamaBaseUrl = "http://localhost:11434";
+const defaultOllamaBaseUrl = "https://ignition-good-urethane.ngrok-free.dev";
 const ollamaModel = "llama3.2:3b";
 
 let hideTimer = 0;
@@ -192,7 +192,8 @@ async function askOllama(question, context = "") {
   const response = await fetch(ollamaEndpoint(), {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true"
     },
     body: JSON.stringify({
       model: ollamaModel,
