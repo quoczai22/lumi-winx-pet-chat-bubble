@@ -4,7 +4,8 @@ const textarea = document.querySelector("#assistantText");
 const questionText = document.querySelector("#questionText");
 const askButton = document.querySelector("#askPaaraket");
 const voiceButton = document.querySelector("#voiceDemo");
-const ollamaEndpoint = "http://localhost:11434/api/generate";
+const ollamaBaseUrlInput = document.querySelector("#ollamaBaseUrl");
+const defaultOllamaBaseUrl = "http://localhost:11434";
 const ollamaModel = "llama3.2:3b";
 
 let hideTimer = 0;
@@ -148,6 +149,19 @@ function selectedAnswerMode() {
   return document.querySelector('input[name="answerMode"]:checked')?.value || "ollama";
 }
 
+function savedOllamaBaseUrl() {
+  return window.localStorage.getItem("lumiWinxOllamaBaseUrl") || defaultOllamaBaseUrl;
+}
+
+function setSavedOllamaBaseUrl(value) {
+  const cleanValue = value.trim().replace(/\/+$/, "");
+  window.localStorage.setItem("lumiWinxOllamaBaseUrl", cleanValue || defaultOllamaBaseUrl);
+}
+
+function ollamaEndpoint() {
+  return `${savedOllamaBaseUrl()}/api/generate`;
+}
+
 function buildOllamaPrompt(question, context = "") {
   return [
     "You are Paaraket AI, a fast friendly English learning assistant.",
@@ -175,7 +189,7 @@ function petBubbleTextForAiAnswer(answer) {
 }
 
 async function askOllama(question, context = "") {
-  const response = await fetch(ollamaEndpoint, {
+  const response = await fetch(ollamaEndpoint(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -408,6 +422,11 @@ function startVoiceDemo() {
 
 askButton.addEventListener("click", askPaaraket);
 voiceButton.addEventListener("click", startVoiceDemo);
+ollamaBaseUrlInput.value = savedOllamaBaseUrl();
+ollamaBaseUrlInput.addEventListener("change", () => {
+  setSavedOllamaBaseUrl(ollamaBaseUrlInput.value);
+  showPetBubble("Tớ lưu URL Ollama cho cậu rồi nha.", { alreadyCute: true });
+});
 
 window.petBubble = {
   show: showPetBubble,

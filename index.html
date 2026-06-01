@@ -21,6 +21,14 @@
         <label for="questionText">Ask Paaraket AI</label>
         <textarea id="questionText" rows="3">What is the difference between let and const in JavaScript?</textarea>
 
+        <label for="ollamaBaseUrl" class="answer-label">Ollama server URL</label>
+        <input
+          id="ollamaBaseUrl"
+          type="url"
+          value="http://localhost:11434"
+          placeholder="http://localhost:11434 or https://your-ngrok-url"
+        />
+
         <div class="mode-row" aria-label="Answer mode">
           <label class="mode-option">
             <input type="radio" name="answerMode" value="speaking" checked />
