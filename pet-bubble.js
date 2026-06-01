@@ -364,11 +364,11 @@ function correctVoiceTranscript(transcript) {
     }
   }
 
-  if (best.score >= 0.34) {
-    return best;
+  if (best.score >= 0.72) {
+    return { ...best, corrected: true };
   }
 
-  return { question: transcript, score: 0 };
+  return { question: transcript, score: best.score, suggestion: best.question, corrected: false };
 }
 
 function buildCoachContext(userText, match = { item: null, score: 0 }) {
@@ -574,11 +574,18 @@ function startVoiceDemo() {
     const corrected = correctVoiceTranscript(transcript);
     questionText.value = corrected.question;
 
-    if (corrected.score > 0) {
+    if (corrected.corrected) {
       textarea.value = [
         `Heard: ${transcript}`,
         `Corrected to: ${corrected.question}`,
         `Match confidence: ${Math.round(corrected.score * 100)}%`
+      ].join("\n");
+    } else if (corrected.score >= 0.45) {
+      textarea.value = [
+        `Heard: ${transcript}`,
+        `Closest bank question: ${corrected.suggestion}`,
+        `Match confidence: ${Math.round(corrected.score * 100)}%`,
+        "Kept the original transcript because the match was not strong enough."
       ].join("\n");
     }
 

@@ -118,7 +118,7 @@ window.petBubble.show("Xong rùi nè cậu.", { alreadyCute: true });
 ```text
 voice input
 → speech-to-text
-→ correct transcript against speaking-bank questions when close enough
+→ correct transcript against speaking-bank questions only when the match is very strong
 → assistant response đầy đủ
 → window.petBubble.show(assistantResponse)
 → chat chính vẫn hiển thị câu trả lời đầy đủ
