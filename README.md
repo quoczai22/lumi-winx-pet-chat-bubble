@@ -31,6 +31,8 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 
 This mode acts like a local English speaking examiner. Type `start` or leave the question box empty, then click **Hỏi Paaraket** to get the first question. After the student answers, click again to receive scores, corrections, a better B1 answer, and one follow-up question.
 
+If you type an examiner question that closely matches `speaking-bank.json`, the app returns the stored answer idea instead of pretending to grade it. This keeps the original `av3.txt` context available when you need a model answer.
+
 The coach uses:
 
 - `coach-config.json` for examiner rules.

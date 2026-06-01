@@ -305,6 +305,47 @@ function relevantBankExamples(text) {
     .map((entry) => entry.item);
 }
 
+function bestBankQuestionMatch(text) {
+  let best = { item: null, score: 0 };
+
+  for (const item of speakingBank) {
+    const score = fuzzyTextScore(text, item.question);
+    if (score > best.score) {
+      best = { item, score };
+    }
+  }
+
+  return best;
+}
+
+function isLikelyQuestion(text) {
+  const cleanText = text.trim();
+  return (
+    cleanText.endsWith("?") ||
+    /^(what|when|where|why|how|who|which|do|does|did|are|is|can|could|would|should|tell me|describe)\b/i.test(cleanText)
+  );
+}
+
+function buildBankAnswerContext(match) {
+  return [
+    "",
+    "Student profile JSON:",
+    JSON.stringify(profileData, null, 2),
+    "",
+    "Matched speaking-bank item JSON:",
+    JSON.stringify(match.item, null, 2),
+    "",
+    `Match confidence: ${Math.round(match.score * 100)}%`,
+    "",
+    "Task:",
+    "- The user entered an examiner question, not a student answer.",
+    "- Use the matched speaking-bank answer as the main source.",
+    "- Adapt it lightly to the student's profile if needed.",
+    "- Return only a natural B1 speaking answer in first person.",
+    "- Do not score, correct, or ask a next question."
+  ].join("\n");
+}
+
 function correctVoiceTranscript(transcript) {
   let best = { question: transcript, score: 0 };
 
@@ -322,7 +363,7 @@ function correctVoiceTranscript(transcript) {
   return { question: transcript, score: 0 };
 }
 
-function buildCoachContext(userText) {
+function buildCoachContext(userText, match = { item: null, score: 0 }) {
   const isStarting = coachHistory.length === 0 && /^(start|begin|first question|)$/i.test(userText.trim());
   const examples = relevantBankExamples(userText);
 
@@ -337,6 +378,9 @@ function buildCoachContext(userText) {
     "Relevant speaking answer examples JSON:",
     JSON.stringify(examples, null, 2),
     "",
+    "Best exact speaking-bank match JSON:",
+    JSON.stringify(match.item ? { confidence: Math.round(match.score * 100), ...match.item } : null, null, 2),
+    "",
     "Conversation history JSON:",
     JSON.stringify(coachHistory.slice(-6), null, 2),
     "",
@@ -346,7 +390,7 @@ function buildCoachContext(userText) {
     "Coach behavior:",
     isStarting
       ? "Start immediately by asking one short speaking question only. Do not give feedback yet."
-      : "The student has answered or given an instruction. If it is an answer, give feedback in the exact configured format, then ask one next question. If it is an instruction like simpler/test mode/practice mode/Vietnamese explanation, follow it."
+      : "The student has answered or given an instruction. If it is an answer, give feedback in the exact configured format, then ask one next question. If there is a strong speaking-bank match, use that matched answer as the gold reference for Corrections and Better B1 answer. If it is an instruction like simpler/test mode/practice mode/Vietnamese explanation, follow it."
   ].join("\n");
 }
 
@@ -374,11 +418,23 @@ async function askPaaraket() {
         await loadPersonalContext();
       }
 
-      const answer = await askOllama(message, buildCoachContext(message));
+      const match = bestBankQuestionMatch(message);
+      const shouldReturnBankAnswer =
+        isLikelyQuestion(message) &&
+        match.item &&
+        match.score >= 0.46 &&
+        !/^(start|begin|first question)$/i.test(message);
+      const context = shouldReturnBankAnswer ? buildBankAnswerContext(match) : buildCoachContext(message, match);
+      const answer = await askOllama(message, context);
       textarea.value = answer || "Ollama did not return an answer.";
       coachHistory.push({ role: "student", content: message });
       coachHistory.push({ role: "coach", content: answer });
-      showPetBubble("Coach trả lời rồi nè cậu, luyện tiếp nha.", { alreadyCute: true });
+      showPetBubble(
+        shouldReturnBankAnswer
+          ? "Tớ lấy câu mẫu trong file cho cậu rồi nè."
+          : "Coach trả lời rồi nè cậu, luyện tiếp nha.",
+        { alreadyCute: true }
+      );
       return;
     } catch (error) {
       textarea.value = [
