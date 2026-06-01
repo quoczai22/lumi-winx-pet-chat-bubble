@@ -13,6 +13,9 @@ let typeTimer = 0;
 let trainingData = [];
 let profileData = null;
 let speakingTopics = [];
+let coachConfig = null;
+let speakingBank = [];
+let coachHistory = [];
 
 const cuteReplies = [
   {
@@ -234,13 +237,17 @@ async function loadJsonFile(path, fallback) {
 }
 
 async function loadPersonalContext() {
-  const [profile, topics] = await Promise.all([
+  const [profile, topics, coach, bank] = await Promise.all([
     loadJsonFile("./profile-data.json", null),
-    loadJsonFile("./speaking-topics.json", [])
+    loadJsonFile("./speaking-topics.json", []),
+    loadJsonFile("./coach-config.json", null),
+    loadJsonFile("./speaking-bank.json", [])
   ]);
 
   profileData = profile;
   speakingTopics = topics;
+  coachConfig = coach;
+  speakingBank = bank;
 }
 
 function topicScore(question, topic) {
@@ -283,15 +290,81 @@ function buildSpeakingContext(question) {
   ].join("\n");
 }
 
+function relevantBankExamples(text) {
+  return [...speakingBank]
+    .map((item) => ({
+      item,
+      score: Math.max(similarityScore(text, item.question), similarityScore(text, item.answer))
+    }))
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 4)
+    .map((entry) => entry.item);
+}
+
+function buildCoachContext(userText) {
+  const isStarting = coachHistory.length === 0 && /^(start|begin|first question|)$/i.test(userText.trim());
+  const examples = relevantBankExamples(userText);
+
+  return [
+    "",
+    "Coach config JSON:",
+    JSON.stringify(coachConfig, null, 2),
+    "",
+    "Student profile JSON:",
+    JSON.stringify(profileData, null, 2),
+    "",
+    "Relevant speaking answer examples JSON:",
+    JSON.stringify(examples, null, 2),
+    "",
+    "Conversation history JSON:",
+    JSON.stringify(coachHistory.slice(-6), null, 2),
+    "",
+    "Current student message:",
+    userText || "start",
+    "",
+    "Coach behavior:",
+    isStarting
+      ? "Start immediately by asking one short speaking question only. Do not give feedback yet."
+      : "The student has answered or given an instruction. If it is an answer, give feedback in the exact configured format, then ask one next question. If it is an instruction like simpler/test mode/practice mode/Vietnamese explanation, follow it."
+  ].join("\n");
+}
+
 async function askPaaraket() {
   if (trainingData.length === 0) {
     await loadTrainingData();
   }
 
   const question = questionText.value.trim();
-  if (!question) {
+  if (!question && selectedAnswerMode() !== "coach") {
     showPetBubble("Cậu hỏi tớ một câu tiếng Anh đi nè.", { alreadyCute: true });
     return;
+  }
+
+  if (selectedAnswerMode() === "coach") {
+    const message = question || "start";
+    showPetBubble("Tớ chuyển cho speaking coach nha cậu.", { alreadyCute: true });
+    textarea.value = "Speaking coach is thinking...";
+
+    try {
+      if (!profileData || !coachConfig) {
+        await loadPersonalContext();
+      }
+
+      const answer = await askOllama(message, buildCoachContext(message));
+      textarea.value = answer || "Ollama did not return an answer.";
+      coachHistory.push({ role: "student", content: message });
+      coachHistory.push({ role: "coach", content: answer });
+      showPetBubble("Coach trả lời rồi nè cậu, luyện tiếp nha.", { alreadyCute: true });
+      return;
+    } catch (error) {
+      textarea.value = [
+        "Speaking coach could not reach Ollama.",
+        "",
+        `Reason: ${error.message}`
+      ].join("\n");
+      showPetBubble("Coach chưa kết nối được á cậu.", { alreadyCute: true });
+      return;
+    }
   }
 
   if (selectedAnswerMode() === "speaking") {
@@ -432,7 +505,10 @@ ollamaBaseUrlInput.addEventListener("change", () => {
 window.petBubble = {
   show: showPetBubble,
   cuteText: petBubbleTextFromAssistant,
-  askPaaraket
+  askPaaraket,
+  resetCoach: () => {
+    coachHistory = [];
+  }
 };
 
 Promise.all([loadTrainingData(), loadPersonalContext()]).then(() => {

@@ -19,7 +19,7 @@
 
       <section class="control-panel" aria-label="Paaraket AI controls">
         <label for="questionText">Ask Paaraket AI</label>
-        <textarea id="questionText" rows="3">What is the difference between let and const in JavaScript?</textarea>
+        <textarea id="questionText" rows="3">start</textarea>
 
         <label for="ollamaBaseUrl" class="answer-label">Ollama server URL</label>
         <input
@@ -31,7 +31,11 @@
 
         <div class="mode-row" aria-label="Answer mode">
           <label class="mode-option">
-            <input type="radio" name="answerMode" value="speaking" checked />
+            <input type="radio" name="answerMode" value="coach" checked />
+            Speaking coach
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="answerMode" value="speaking" />
             Speaking practice
           </label>
           <label class="mode-option">

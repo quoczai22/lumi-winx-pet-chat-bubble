@@ -1,38 +1,45 @@
 {
-  "name": "Kien",
+  "name": "Quoc",
+  "age": 19,
+  "nationality": "Vietnamese",
+  "location": "Ho Chi Minh City, Vietnam",
+  "education": "Second-year Information Technology student",
   "english_level": "A2-B1",
+  "target_level": "strong B1",
+  "goals": [
+    "improve speaking confidence",
+    "prepare for university speaking tests",
+    "study abroad in Australia and Japan",
+    "become a software engineer or work in an IT-related career"
+  ],
+  "interests": [
+    "programming",
+    "C#",
+    "WPF",
+    "SQL Server",
+    "AI",
+    "software development",
+    "gym",
+    "football",
+    "travel",
+    "music production",
+    "self-improvement"
+  ],
   "personality": [
-    "friendly",
-    "curious",
-    "creative",
-    "a little shy when speaking English"
-  ],
-  "hobbies": [
-    "coding",
-    "AI assistants",
-    "cute AI pets",
-    "learning English with technology"
-  ],
-  "favorite_subjects": [
-    "computer science",
-    "English"
-  ],
-  "recent_projects": [
-    "I created a cute AI pet named Lumi Winx.",
-    "I built a pet chat bubble that can answer practice questions."
+    "reflective",
+    "ambitious",
+    "sometimes nervous when speaking English",
+    "sometimes overthinks",
+    "values family",
+    "quiet on social media"
   ],
   "speaking_style": {
-    "tone": "simple, natural, friendly, and personal",
-    "answer_length": "2 to 4 short sentences",
+    "tone": "simple, natural, personal, and suitable for university speaking tests",
+    "answer_length": "2 to 5 short sentences",
     "avoid": [
-      "overly difficult vocabulary",
-      "very long answers",
+      "very difficult academic vocabulary",
+      "answers that sound memorized or robotic",
       "fake personal details that are not in the profile"
     ]
-  },
-  "fallback_preferences": [
-    "If information is missing, give a safe general answer that still sounds personal.",
-    "Use simple English suitable for speaking practice.",
-    "Prefer examples related to coding, AI, pets, school, and learning."
-  ]
+  }
 }

@@ -21,10 +21,22 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 - `index.html`: demo mở trực tiếp trong browser.
 - `pet-bubble.css`: giao diện bubble và pet idle animation.
 - `pet-bubble.js`: chuyển câu trả lời assistant thành câu bubble ngắn, cute.
+- `coach-config.json`: luật speaking examiner/coach.
+- `speaking-bank.json`: câu hỏi và câu trả lời mẫu từ file `av3.txt`.
 - `training-data.json`: dữ liệu huấn luyện mock local theo dạng câu hỏi/câu trả lời.
 - `profile-data.json`: thông tin cá nhân dùng cho Speaking Practice.
 - `speaking-topics.json`: topic/câu hỏi mẫu để trả lời speaking theo context.
 - `assets/lumi-winx-spritesheet.webp`: spritesheet demo của Lumi Winx.
+
+## Speaking Coach mode
+
+This mode acts like a local English speaking examiner. Type `start` or leave the question box empty, then click **Hỏi Paaraket** to get the first question. After the student answers, click again to receive scores, corrections, a better B1 answer, and one follow-up question.
+
+The coach uses:
+
+- `coach-config.json` for examiner rules.
+- `profile-data.json` for student identity and goals.
+- `speaking-bank.json` for sample speaking answers.
 
 ## Speaking Practice mode
 
