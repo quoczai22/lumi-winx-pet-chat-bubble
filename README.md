@@ -91,6 +91,22 @@ https://ignition-good-urethane.ngrok-free.dev
 
 Do not expose Ollama directly to the public internet for long-term use because the Ollama API has no app-level login in this demo. For quick testing, an ngrok URL is okay while you are watching it. For an always-on setup, use a small backend/proxy with authentication or deploy a real API provider behind Netlify/Vercel/Cloudflare.
 
+### Recommended ngrok setup
+
+Run the local CORS proxy first:
+
+```powershell
+node ollama-proxy.js
+```
+
+Then point ngrok at the proxy, not directly at Ollama:
+
+```powershell
+ngrok http 8788
+```
+
+Copy the HTTPS ngrok URL into **Ollama server URL**.
+
 ## API nhỏ
 
 Sau khi load `pet-bubble.js`, gọi:
