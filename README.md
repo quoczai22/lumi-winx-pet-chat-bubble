@@ -27,7 +27,7 @@ https://quoczai22.github.io/lumi-winx-pet-chat-bubble/
 - `speaking-topics.json`: topic/câu hỏi mẫu để trả lời speaking theo context.
 - `assets/lumi-winx-spritesheet.webp`: spritesheet demo của Lumi Winx.
 
-## Speaking Coach mode
+## Examiner mode
 
 This mode acts like a local English speaking examiner. Type `start` or leave the question box empty, then click **Hỏi Paaraket** to get the first question. After the student answers, click again to receive scores, corrections, a better B1 answer, and one follow-up question.
 
@@ -39,7 +39,7 @@ The coach uses:
 
 Shortcut: paste text like `You answered: "..."` into the question box and click **Hỏi Paaraket**. Lumi Winx will show the quoted answer directly in the speech bubble.
 
-## Speaking Practice mode
+## Answer Helper mode
 
 This mode sends the user's question, `profile-data.json`, and matching notes from `speaking-topics.json` to local Ollama. It asks the model to answer in first person, simple A2-B1 English, using the student's profile first.
 
