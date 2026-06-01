@@ -4,6 +4,8 @@ const textarea = document.querySelector("#assistantText");
 const questionText = document.querySelector("#questionText");
 const askButton = document.querySelector("#askPaaraket");
 const voiceButton = document.querySelector("#voiceDemo");
+const ollamaEndpoint = "http://localhost:11434/api/generate";
+const ollamaModel = "llama3.2:3b";
 
 let hideTimer = 0;
 let typeTimer = 0;
@@ -140,6 +142,60 @@ function cuteAnswerForTraining(match) {
   return "Câu này giống bài tớ học rùi, tớ thử trả lời nha.";
 }
 
+function selectedAnswerMode() {
+  return document.querySelector('input[name="answerMode"]:checked')?.value || "ollama";
+}
+
+function buildOllamaPrompt(question) {
+  return [
+    "You are Paaraket AI, a fast friendly English learning assistant.",
+    "Answer the user's English question clearly and briefly.",
+    "Prefer practical explanations and examples.",
+    "If the question is not about English, programming, interviews, or learning, still answer helpfully but keep it concise.",
+    "",
+    `Question: ${question}`,
+    "",
+    "Answer:"
+  ].join("\n");
+}
+
+function petBubbleTextForAiAnswer(answer) {
+  if (/i do not know|not sure|cannot/i.test(answer)) {
+    return "Câu này hơi khó xíu, tớ nghĩ thêm cho cậu nha.";
+  }
+
+  if (answer.length < 120) {
+    return "Tớ trả lời được nè cậu, đọc phần bên cạnh nha.";
+  }
+
+  return "Tớ có câu trả lời rồi nè cậu, gọn mà đủ ý luôn á.";
+}
+
+async function askOllama(question) {
+  const response = await fetch(ollamaEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: ollamaModel,
+      prompt: buildOllamaPrompt(question),
+      stream: false,
+      options: {
+        temperature: 0.25,
+        num_predict: 180
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ollama returned ${response.status}`);
+  }
+
+  const data = await response.json();
+  return (data.response || "").trim();
+}
+
 async function loadTrainingData() {
   try {
     const response = await fetch("./training-data.json", { cache: "no-store" });
@@ -159,6 +215,27 @@ async function askPaaraket() {
   if (!question) {
     showPetBubble("Cậu hỏi tớ một câu tiếng Anh đi nè.", { alreadyCute: true });
     return;
+  }
+
+  if (selectedAnswerMode() === "ollama") {
+    showPetBubble("Tớ hỏi Ollama liền cho cậu nha.", { alreadyCute: true });
+    textarea.value = "Thinking with local Ollama...";
+
+    try {
+      const answer = await askOllama(question);
+      textarea.value = answer || "Ollama did not return an answer.";
+      showPetBubble(petBubbleTextForAiAnswer(answer), { alreadyCute: true });
+      return;
+    } catch (error) {
+      textarea.value = [
+        "Ollama local is not reachable from this page, so Paaraket fell back to mock training.",
+        "",
+        `Reason: ${error.message}`
+      ].join("\n");
+      showPetBubble("Ollama chưa bắt được á, tớ dùng bài học local nha.", {
+        alreadyCute: true
+      });
+    }
   }
 
   const match = findBestTrainingAnswer(question);

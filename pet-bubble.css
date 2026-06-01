@@ -190,6 +190,32 @@ textarea:focus {
   margin-top: 14px;
 }
 
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.mode-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  margin: 0;
+  border: 1px solid rgba(199, 139, 70, 0.38);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: rgba(255, 250, 240, 0.7);
+  color: #6f4325;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mode-option input {
+  accent-color: var(--rose-deep);
+}
+
 button {
   min-height: 40px;
   border: 0;

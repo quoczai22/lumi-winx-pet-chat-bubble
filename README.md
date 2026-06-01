@@ -43,6 +43,22 @@ Add more examples like this:
 
 This is fast and free, but it only knows the training data. To answer like a real AI, replace `askPaaraket()` with a Netlify Function or local Ollama call.
 
+## Ollama local mode
+
+Install Ollama, then pull a small local model:
+
+```powershell
+ollama pull llama3.2:3b
+```
+
+Keep Ollama running locally. The demo calls:
+
+```text
+http://localhost:11434/api/generate
+```
+
+If the browser blocks localhost from the hosted GitHub Pages page, open `index.html` locally or run a local static server.
+
 ## API nhỏ
 
 Sau khi load `pet-bubble.js`, gọi:
