@@ -5,6 +5,7 @@ const questionText = document.querySelector("#questionText");
 const askButton = document.querySelector("#askPaaraket");
 const voiceButton = document.querySelector("#voiceDemo");
 const ollamaBaseUrlInput = document.querySelector("#ollamaBaseUrl");
+const voiceLanguageInput = document.querySelector("#voiceLanguage");
 const defaultOllamaBaseUrl = "https://ignition-good-urethane.ngrok-free.dev";
 const ollamaModel = "llama3.2:3b";
 
@@ -118,6 +119,38 @@ function similarityScore(left, right) {
   }
 
   return overlap / Math.sqrt(leftTokens.size * rightTokens.size);
+}
+
+function wordBigrams(text) {
+  const normalized = normalizeText(text);
+  const chars = normalized.replace(/\s+/g, "");
+  const bigrams = new Set();
+
+  for (let index = 0; index < chars.length - 1; index += 1) {
+    bigrams.add(chars.slice(index, index + 2));
+  }
+
+  return bigrams;
+}
+
+function fuzzyTextScore(left, right) {
+  const tokenScore = similarityScore(left, right);
+  const leftBigrams = wordBigrams(left);
+  const rightBigrams = wordBigrams(right);
+
+  if (leftBigrams.size === 0 || rightBigrams.size === 0) {
+    return tokenScore;
+  }
+
+  let overlap = 0;
+  for (const bigram of leftBigrams) {
+    if (rightBigrams.has(bigram)) {
+      overlap += 1;
+    }
+  }
+
+  const bigramScore = overlap / Math.sqrt(leftBigrams.size * rightBigrams.size);
+  return Math.max(tokenScore, bigramScore);
 }
 
 function selectedAnswerMode() {
@@ -270,6 +303,23 @@ function relevantBankExamples(text) {
     .sort((left, right) => right.score - left.score)
     .slice(0, 4)
     .map((entry) => entry.item);
+}
+
+function correctVoiceTranscript(transcript) {
+  let best = { question: transcript, score: 0 };
+
+  for (const item of speakingBank) {
+    const score = fuzzyTextScore(transcript, item.question);
+    if (score > best.score) {
+      best = { question: item.question, score };
+    }
+  }
+
+  if (best.score >= 0.34) {
+    return best;
+  }
+
+  return { question: transcript, score: 0 };
 }
 
 function buildCoachContext(userText) {
@@ -433,7 +483,7 @@ function startVoiceDemo() {
   }
 
   const recognition = new Recognition();
-  recognition.lang = "vi-VN";
+  recognition.lang = voiceLanguageInput.value;
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
@@ -442,7 +492,17 @@ function startVoiceDemo() {
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    questionText.value = transcript;
+    const corrected = correctVoiceTranscript(transcript);
+    questionText.value = corrected.question;
+
+    if (corrected.score > 0) {
+      textarea.value = [
+        `Heard: ${transcript}`,
+        `Corrected to: ${corrected.question}`,
+        `Match confidence: ${Math.round(corrected.score * 100)}%`
+      ].join("\n");
+    }
+
     askPaaraket();
   };
 

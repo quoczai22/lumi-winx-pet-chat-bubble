@@ -191,7 +191,21 @@ input[type="url"] {
   outline: none;
 }
 
-input[type="url"]:focus {
+select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid rgba(199, 139, 70, 0.48);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  outline: none;
+}
+
+input[type="url"]:focus,
+select:focus {
   border-color: var(--rose);
   box-shadow: 0 0 0 3px rgba(241, 120, 168, 0.18);
 }

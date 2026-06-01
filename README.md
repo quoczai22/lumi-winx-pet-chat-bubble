@@ -114,9 +114,12 @@ window.petBubble.show("Xong rùi nè cậu.", { alreadyCute: true });
 ```text
 voice input
 → speech-to-text
+→ correct transcript against speaking-bank questions when close enough
 → assistant response đầy đủ
 → window.petBubble.show(assistantResponse)
 → chat chính vẫn hiển thị câu trả lời đầy đủ
 ```
 
 Nên giữ bubble khoảng 1-2 câu ngắn. Câu trả lời dài vẫn để trong chat chính.
+
+For English speaking practice, keep **Voice language** set to `English (US)` or `English (UK)`. Use Vietnamese only when speaking Vietnamese.
